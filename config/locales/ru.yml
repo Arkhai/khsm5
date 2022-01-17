@@ -1,0 +1,18 @@
+ru:
+  controllers:
+    games:
+      not_your_game: "Это не ваша игра!"
+      game_created: "Игра началась в %{created_at}, время пошло"
+      game_not_created: "Не удалось создать игру :( Свяжитесь с админом"
+      game_not_finished: "Вы еще не завершили игру"
+      game_finished: "Игра окончена, ваш выигрыш %{prize}. Заходите еще!"
+      game_closed: "Игра %{game_id} закончена и больше недоступна, начните новую!"
+      good_answer: "Правильный ответ, молодцом :)"
+      bad_answer: "Правильный ответ: %{answer}. Игра закончена, ваш приз %{prize}"
+
+  number:
+    currency:
+      format:
+        # Формат отображения валюты и обозначение самой валюты
+        unit: "₽"
+        precision: 0

@@ -1,0 +1,38 @@
+<div class="row">
+  <div class="col-sm-9 col-sm-push-3">
+    <div class="text-center">
+      <%= image_tag asset_path('logo.png'), class: 'game-logo buffer-bottom' %>
+    </div>
+
+    <div class="game-question">
+      <div class="alert alert-info text-center">
+        <h2><%= @game_question.text %></h2>
+      </div>
+
+      <div class="row">
+        <% @game_question.variants.each do |letter, variant| %>
+          <div class="col-md-6 buffer-top">
+            <%= link_to content_tag(:span, letter.upcase, class: 'variant') + ": #{variant}",
+                        answer_game_path(@game, letter: letter),
+                        method: :put,
+                        class: 'btn btn-block btn-default btn-variant'
+            %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-3 col-sm-pull-9">
+    <ul class="list-group list-group-prizes game-prizes">
+      <% Game::PRIZES.reverse.each_with_index do |prize, index| %>
+        <li class="list-group-item text-center <%= 'active' if (14 - index == @game.current_level) %>">
+          <%= fa_icon('diamond') if Game::FIREPROOF_LEVELS.include?(14-index) %>
+          <%= prize %>
+        </li>
+      <% end %>
+    </ul>
+
+    <%= link_to 'Забрать выигрыш', take_money_game_path(@game), method: :put, class: 'btn btn-info btn-block' %>
+  </div>
+</div>
