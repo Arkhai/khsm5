@@ -144,7 +144,7 @@ RSpec.describe Game, type: :model do
     end
 
     context 'incorrect answer given' do
-      it 'return false for incorrect answer ' do
+      it 'return false for incorrect answer' do
         expect(game_w_questions.answer_current_question!('a')).to be_falsey
       end
 
