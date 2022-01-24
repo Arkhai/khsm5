@@ -107,6 +107,15 @@ RSpec.describe GamesController, type: :controller do
       expect(flash.empty?).to be_truthy
     end
 
+    it 'answers incorrect' do
+      put :answer, params: {id: game_w_questions.id, letter: 'a'}
+      game = assigns(:game)
+
+      expect(game.finished?).to be_truthy
+      expect(response).to redirect_to(user_path(user))
+      expect(flash[:alert]).to be
+    end
+
     # проверка, что пользовтеля посылают из чужой игры
     it '#show alien game' do
       # создаем новую игру, юзер не прописан, будет создан фабрикой новый
