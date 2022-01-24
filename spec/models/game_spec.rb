@@ -20,33 +20,35 @@ RSpec.describe Game, type: :model do
   end
 
   # Группа тестов на работу фабрики создания новых игр
-  context 'Game Factory' do
-    it 'Game.create_game! new correct game' do
-      # Генерим 60 вопросов с 4х запасом по полю level, чтобы проверить работу
-      # RANDOM при создании игры.
-      generate_questions(60)
+  describe '.create_game_for_user!' do
+    context 'Game Factory' do
+      it 'creates new correct game' do
+        # Генерим 60 вопросов с 4х запасом по полю level, чтобы проверить работу
+        # RANDOM при создании игры.
+        generate_questions(60)
 
-      game = nil
+        game = nil
 
-      # Создaли игру, обернули в блок, на который накладываем проверки
-      expect {
-        game = Game.create_game_for_user!(user)
-        # Проверка: Game.count изменился на 1 (создали в базе 1 игру)
-      }.to change(Game, :count).by(1).and(
-        # GameQuestion.count +15
-        change(GameQuestion, :count).by(15).and(
-          # Game.count не должен измениться
-          change(Question, :count).by(0)
+        # Создaли игру, обернули в блок, на который накладываем проверки
+        expect {
+          game = Game.create_game_for_user!(user)
+          # Проверка: Game.count изменился на 1 (создали в базе 1 игру)
+        }.to change(Game, :count).by(1).and(
+          # GameQuestion.count +15
+          change(GameQuestion, :count).by(15).and(
+            # Game.count не должен измениться
+            change(Question, :count).by(0)
+          )
         )
-      )
 
-      # Проверяем статус и поля
-      expect(game.user).to eq(user)
-      expect(game.status).to eq(:in_progress)
+        # Проверяем статус и поля
+        expect(game.user).to eq(user)
+        expect(game.status).to eq(:in_progress)
 
-      # Проверяем корректность массива игровых вопросов
-      expect(game.game_questions.size).to eq(15)
-      expect(game.game_questions.map(&:level)).to eq (0..14).to_a
+        # Проверяем корректность массива игровых вопросов
+        expect(game.game_questions.size).to eq(15)
+        expect(game.game_questions.map(&:level)).to eq (0..14).to_a
+      end
     end
   end
 
@@ -63,8 +65,6 @@ RSpec.describe Game, type: :model do
 
       # Перешли на след. уровень
       expect(game_w_questions.current_level).to eq(level + 1)
-      expect(game_w_questions.previous_level).to eq(level)
-      expect(game_w_questions.current_game_question.level).to eq(level + 1)
 
       # Ранее текущий вопрос стал предыдущим
       expect(game_w_questions.current_game_question).not_to eq(q)
@@ -88,61 +88,105 @@ RSpec.describe Game, type: :model do
     end
   end
 
-  context 'answer_current_question!' do
-    it 'game with wrong answer cant be continued' do
-      game_w_questions.is_failed = true
-      expect(game_w_questions.answer_current_question!('a')).to be_falsey
-    end
-
-    it 'timed out game cant be continued' do
-      game_w_questions.finished_at = Time.now
-      game_w_questions.created_at = 1.hour.ago
-      game_w_questions.is_failed = true
-      expect(game_w_questions.answer_current_question!('a')).to be_falsey
-    end
-
-    it 'correct answer on last level finishes the game' do
-      q = game_w_questions.current_game_question
-      q.answer_correct?(q.correct_answer_key)
-      game_w_questions.current_level = Question::QUESTION_LEVELS.max
-      expect(game_w_questions.answer_current_question!(q.correct_answer_key)).to be_truthy
-      expect(game_w_questions.status).to eq(:won)
-    end
-
-    it 'incorrect answer finishes the game' do
-      q = game_w_questions.current_game_question
-      game_w_questions.answer_current_question!(!q.correct_answer_key)
-      expect(game_w_questions.answer_current_question!(!q.correct_answer_key)).to be_falsey
-      expect(game_w_questions.status).to eq(:fail)
+  describe '.current_game_question' do
+    it 'returns correct game question' do
+      expect(game_w_questions.current_game_question).to be_a(GameQuestion)
     end
   end
 
-  context '.status' do
+  describe '.previous_level' do
+    it 'returns correct games previous level' do
+      expect(game_w_questions.previous_level).to eq(game_w_questions.current_level - 1)
+    end
+  end
+
+  describe '.answer_current_question!' do
+    let(:question) { game_w_questions.current_game_question }
+
+    context 'when right answer is given' do
+      it 'increase game level' do
+        level = game_w_questions.current_level
+        game_w_questions.answer_current_question!(question.correct_answer_key)
+        expect(game_w_questions.current_level).to eq(level + 1)
+      end
+    end
+
+    context 'when right answer is given on the last level' do
+      before do
+        game_w_questions.current_level = Question::QUESTION_LEVELS.max
+        game_w_questions.answer_current_question!(question.correct_answer_key)
+      end
+
+      it 'finishes the game' do
+        expect(game_w_questions.finished?).to be_truthy
+      end
+
+      it 'set :won status' do
+        expect(game_w_questions.status).to eq(:won)
+      end
+
+      it 'set the biggest prize' do
+        expect(game_w_questions.prize).to eq(Game::PRIZES[Question::QUESTION_LEVELS.max])
+      end
+
+      it 'increase user balance on the correct amount' do
+        expect(user.balance).to eq(Game::PRIZES[Question::QUESTION_LEVELS.max])
+      end
+    end
+
+    context 'when right answer is given after timeout' do
+      it 'returns false' do
+        game_w_questions.finished_at = Time.now
+        game_w_questions.created_at = 1.hour.ago
+        game_w_questions.is_failed = true
+        expect(game_w_questions.answer_current_question!(question.correct_answer_key)).to be_falsey
+      end
+    end
+
+    context 'incorrect answer given' do
+      it 'return false for incorrect answer ' do
+        expect(game_w_questions.answer_current_question!('a')).to be_falsey
+      end
+
+      it 'sets game status to failed' do
+        game_w_questions.answer_current_question!('a')
+        expect(game_w_questions.status).to eq(:fail)
+      end
+    end
+  end
+
+  describe '.status' do
     before(:each) do
       game_w_questions.finished_at = Time.now
       expect(game_w_questions.finished?).to be_truthy
     end
 
-    it ':won' do
-      game_w_questions.current_level = Question::QUESTION_LEVELS.max + 1
-      expect(game_w_questions.status).to eq(:won)
+    context 'when game is won' do
+      it 'sets game status to :won' do
+        game_w_questions.current_level = Question::QUESTION_LEVELS.max + 1
+        expect(game_w_questions.status).to eq(:won)
+      end
     end
 
-    it ':timeout' do
-      game_w_questions.created_at = 1.hour.ago
-      game_w_questions.is_failed = true
-      expect(game_w_questions.status).to eq(:timeout)
+    context 'when game is timeouted' do
+      it 'sets game status to :timeout' do
+        game_w_questions.created_at = 1.hour.ago
+        game_w_questions.is_failed = true
+        expect(game_w_questions.status).to eq(:timeout)
+      end
     end
 
-    it ':fail' do
-      game_w_questions.is_failed = true
-      expect(game_w_questions.status).to eq(:fail)
+    context 'when game is failed' do
+      it 'sets game status to fail' do
+        game_w_questions.is_failed = true
+        expect(game_w_questions.status).to eq(:fail)
+      end
     end
 
-    it ':money' do
-      expect(game_w_questions.status).to eq(:money)
+    context 'when player took money' do
+      it 'sets game status to :money' do
+        expect(game_w_questions.status).to eq(:money)
+      end
     end
   end
-
-
 end
