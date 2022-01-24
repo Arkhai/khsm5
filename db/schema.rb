@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2016_06_10_145015) do
+ActiveRecord::Schema.define(version: 2022_01_24_182204) do
 
   create_table "game_questions", force: :cascade do |t|
     t.integer "game_id"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2016_06_10_145015) do
     t.integer "d"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "help_hash"
     t.index ["game_id"], name: "index_game_questions_on_game_id"
     t.index ["question_id"], name: "index_game_questions_on_question_id"
   end
@@ -33,6 +34,9 @@ ActiveRecord::Schema.define(version: 2016_06_10_145015) do
     t.integer "prize", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "fifty_fifty_used", default: false, null: false
+    t.boolean "audience_help_used", default: false, null: false
+    t.boolean "friend_call_used", default: false, null: false
     t.index ["user_id"], name: "index_games_on_user_id"
   end
 

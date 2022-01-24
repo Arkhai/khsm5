@@ -133,6 +133,31 @@ class Game < ActiveRecord::Base
     end
   end
 
+  # TODO: Дорогой ученик!
+  #
+  # Код метода ниже можно сократиь в 3 раза с помощью возможностей Ruby и Rails,
+  # подумайте как и реализуйте. Помните о безопасности и входных данных!
+  #
+  # Вариант решения вы найдете в комментарии в конце файла, отвечающего за настройки
+  # хранения сессий вашего приложения. Вот такой вот вам ребус :)
+  #
+  # Создает варианты подсказок для текущего игрового вопроса.
+  # Возвращает true, если подсказка применилась успешно,
+  # false если подсказка уже заюзана.
+  #
+  # help_type = :fifty_fifty | :audience_help | :friend_call
+  def use_help(help_type)
+    help_types = %i(fifty_fifty audience_help friend_call)
+    help_type = help_type.to_sym
+    raise ArgumentError.new('wrong help_type') unless help_types.include?(help_type)
+
+     unless self["#{help_type}_used"]
+       self["#{help_type}_used"] = true
+       current_game_question.apply_help!(help_type)
+       save
+     end
+  end
+
   # Метод take_money! записывает юзеру игровую сумму на счет и завершает игру,
   def take_money!
     # Из законченной или неначатой игры нечего брать

@@ -162,5 +162,23 @@ RSpec.describe GamesController, type: :controller do
       expect(response).to redirect_to(game_path(game_w_questions))
       expect(flash[:alert]).to be
     end
+
+    it 'uses audience help' do
+      # Проверяем, что у текущего вопроса нет подсказок
+      expect(game_w_questions.current_game_question.help_hash[:audience_help]).not_to be
+      # И подсказка не использована
+      expect(game_w_questions.audience_help_used).to be_falsey
+
+      # Пишем запрос в контроллер с нужным типом (put — не создаёт новых сущностей, но что-то меняет)
+      put :help, params: {id: game_w_questions.id, help_type: :audience_help}
+      game = assigns(:game)
+
+      # Проверяем, что игра не закончилась, что флажок установился, и подсказка записалась
+      expect(game.finished?).to be_falsey
+      expect(game.audience_help_used).to be_truthy
+      expect(game.current_game_question.help_hash[:audience_help]).to be
+      expect(game.current_game_question.help_hash[:audience_help].keys).to contain_exactly('a', 'b', 'c', 'd')
+      expect(response).to redirect_to(game_path(game))
+    end
   end
 end

@@ -81,6 +81,18 @@ class GamesController < ApplicationController
     }
   end
 
+  def help
+    # Дёргаем метод use_help у @game, передаём то, что пришло в параметрах
+    msg = if @game.use_help(params[:help_type].to_sym)
+            {flash: {info: I18n.t('controllers.games.help_used')}}
+          else
+            {alert: I18n.t('controllers.games.help_not_used')}
+          end
+
+    # Редиректим на игру с сообщением
+    redirect_to game_path(@game), msg
+  end
+
   private
 
   def redirect_from_finished_game!
