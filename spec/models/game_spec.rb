@@ -90,13 +90,14 @@ RSpec.describe Game, type: :model do
 
   describe '.current_game_question' do
     it 'returns correct game question' do
-      expect(game_w_questions.current_game_question).to be_a(GameQuestion)
+      expect(game_w_questions.current_game_question).to eq(game_w_questions.game_questions.first)
     end
   end
 
   describe '.previous_level' do
     it 'returns correct games previous level' do
-      expect(game_w_questions.previous_level).to eq(game_w_questions.current_level - 1)
+      game_w_questions.current_level = 12
+      expect(game_w_questions.previous_level).to eq 11
     end
   end
 
@@ -138,7 +139,6 @@ RSpec.describe Game, type: :model do
       it 'returns false' do
         game_w_questions.finished_at = Time.now
         game_w_questions.created_at = 1.hour.ago
-        game_w_questions.is_failed = true
         expect(game_w_questions.answer_current_question!(question.correct_answer_key)).to be_falsey
       end
     end
