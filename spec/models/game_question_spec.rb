@@ -45,22 +45,44 @@ RSpec.describe GameQuestion, type: :model do
     end
   end
 
-  context 'user helpers' do
-    it 'correct audience_help' do
-      # Проверяем, что объект не включает эту подсказку
-      expect(game_question.help_hash).not_to include(:audience_help)
+  describe '#help_hash' do
+    it 'correctly add help_hash' do
+      # на фабрике у нас изначально хэш пустой
+      expect(game_question.help_hash).to eq({})
 
-      # Добавили подсказку. Этот метод реализуем в модели
-      # GameQuestion
-      game_question.add_audience_help
+      # добавляем пару ключей
+      game_question.help_hash[:some_key1] = 'blabla1'
+      game_question.help_hash[:some_key2] = 'blabla2'
 
-      # Ожидаем, что в хеше появилась подсказка
-      expect(game_question.help_hash).to include(:audience_help)
+      # сохраняем модель и ожидаем сохранения хорошего
+      expect(game_question.save).to be_truthy
 
-      # Дёргаем хеш
-      ah = game_question.help_hash[:audience_help]
-      # Проверяем, что входят только ключи a, b, c, d
-      expect(ah.keys).to contain_exactly('a', 'b', 'c', 'd')
+      # загрузим этот же вопрос из базы для чистоты эксперимента
+      gq = GameQuestion.find(game_question.id)
+
+      # проверяем новые значение хэша
+      expect(gq.help_hash).to eq({some_key1: 'blabla1', some_key2: 'blabla2'})
+    end
+  end
+
+  describe 'user helpers' do
+    context 'user use help' do
+      it 'correct audience_help' do
+        # Проверяем, что объект не включает эту подсказку
+        expect(game_question.help_hash).not_to include(:audience_help)
+
+        # Добавили подсказку. Этот метод реализуем в модели
+        # GameQuestion
+        game_question.add_audience_help
+
+        # Ожидаем, что в хеше появилась подсказка
+        expect(game_question.help_hash).to include(:audience_help)
+
+        # Дёргаем хеш
+        ah = game_question.help_hash[:audience_help]
+        # Проверяем, что входят только ключи a, b, c, d
+        expect(ah.keys).to contain_exactly('a', 'b', 'c', 'd')
+      end
     end
   end
 end
