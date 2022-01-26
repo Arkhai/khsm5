@@ -192,39 +192,90 @@ RSpec.describe GamesController, type: :controller do
 
   describe '#help' do
     context 'when authenticated user' do
-      it 'uses audience help' do
-        sign_in user
-        # Проверяем, что у текущего вопроса нет подсказок
-        expect(game_w_questions.current_game_question.help_hash[:audience_help]).not_to be
-        # И подсказка не использована
-        expect(game_w_questions.audience_help_used).to be_falsey
+      before { sign_in user }
 
-        # Пишем запрос в контроллер с нужным типом (put — не создаёт новых сущностей, но что-то меняет)
-        put :help, params: {id: game_w_questions.id, help_type: :audience_help}
-        game = assigns(:game)
+      context 'audience help' do
+        context 'audience help is not used' do
+          it 'returns there is no help_hash' do
+            expect(game_w_questions.current_game_question.help_hash[:audience_help]).not_to be
+          end
 
-        # Проверяем, что игра не закончилась, что флажок установился, и подсказка записалась
-        expect(game.finished?).to be_falsey
-        expect(game.audience_help_used).to be_truthy
-        expect(game.current_game_question.help_hash[:audience_help]).to be
-        expect(game.current_game_question.help_hash[:audience_help].keys).to contain_exactly('a', 'b', 'c', 'd')
-        expect(response).to redirect_to(game_path(game))
+          it 'returns audience help is not used' do
+            expect(game_w_questions.audience_help_used).to eq false
+          end
+        end
+
+        context 'audience help is used' do
+          before do
+            put :help, params: {id: game_w_questions.id, help_type: :audience_help}
+          end
+
+          let(:game) { assigns(:game) }
+
+          it 'continues game' do
+            expect(game.finished?).to eq false
+          end
+
+          it 'returns audience help is used' do
+            expect(game.audience_help_used).to eq true
+          end
+
+          it 'creates help hash with audience help key' do
+            expect(game.current_game_question.help_hash[:audience_help]).to be
+          end
+
+          it 'help hash returns correct keys' do
+            expect(game.current_game_question.help_hash[:audience_help].keys).to contain_exactly('a', 'b', 'c', 'd')
+          end
+
+          it 'redirects to game path' do
+            expect(response).to redirect_to(game_path(game))
+          end
+        end
       end
 
-      it 'uses fifty fifty' do
-        sign_in user
-        expect(game_w_questions.current_game_question.help_hash[:fifty_fifty]).not_to be
-        expect(game_w_questions.fifty_fifty_used).to be_falsey
+      context 'fifty fifty' do
+        context 'fifty fifty is not used' do
+          it 'returns there is no help_hash' do
+            expect(game_w_questions.current_game_question.help_hash[:fifty_fifty]).not_to be
+          end
 
-        put :help, params: {id: game_w_questions.id, help_type: :fifty_fifty}
-        game = assigns(:game)
+          it 'returns audience help is not used' do
+            expect(game_w_questions.fifty_fifty_used).to eq false
+          end
+        end
 
-        expect(game.finished?).to be_falsey
-        expect(game.fifty_fifty_used).to be_truthy
-        expect(game.current_game_question.help_hash[:fifty_fifty]).to be
-        expect(game.current_game_question.help_hash[:fifty_fifty]).to include('b')
-        expect(game.current_game_question.help_hash[:fifty_fifty].size).to eq 2
-        expect(response).to redirect_to(game_path(game))
+        context 'fifty fifty is used' do
+          before do
+            put :help, params: {id: game_w_questions.id, help_type: :fifty_fifty}
+          end
+
+          let(:game) { assigns(:game) }
+
+          it 'continues game' do
+            expect(game.finished?).to eq false
+          end
+
+          it 'returns fifty fifty is used' do
+            expect(game.fifty_fifty_used).to eq true
+          end
+
+          it 'creates help hash with fifty fifty key' do
+            expect(game.current_game_question.help_hash[:fifty_fifty]).to be
+          end
+
+          it 'returns help hash contains correct answer' do
+            expect(game.current_game_question.help_hash[:fifty_fifty]).to include('b')
+          end
+
+          it 'returns correct size of help hash' do
+            expect(game.current_game_question.help_hash[:fifty_fifty].size).to eq 2
+          end
+
+          it 'redirects to game path' do
+            expect(response).to redirect_to(game_path(game))
+          end
+        end
       end
     end
   end
