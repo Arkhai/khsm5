@@ -65,23 +65,31 @@ RSpec.describe GameQuestion, type: :model do
     end
   end
 
-  describe 'user helpers' do
-    context 'user use help' do
+  describe '#apply_help!' do
+    context 'user uses help' do
       it 'correct audience_help' do
-        # Проверяем, что объект не включает эту подсказку
         expect(game_question.help_hash).not_to include(:audience_help)
 
-        # Добавили подсказку. Этот метод реализуем в модели
-        # GameQuestion
         game_question.add_audience_help
 
-        # Ожидаем, что в хеше появилась подсказка
         expect(game_question.help_hash).to include(:audience_help)
 
-        # Дёргаем хеш
         ah = game_question.help_hash[:audience_help]
-        # Проверяем, что входят только ключи a, b, c, d
         expect(ah.keys).to contain_exactly('a', 'b', 'c', 'd')
+      end
+
+      it 'correct fifty_fifty' do
+        # сначала убедимся, в подсказках пока нет нужного ключа
+        expect(game_question.help_hash).not_to include(:fifty_fifty)
+        # вызовем подсказку
+        game_question.add_fifty_fifty
+
+        # проверим создание подсказки
+        expect(game_question.help_hash).to include(:fifty_fifty)
+        ff = game_question.help_hash[:fifty_fifty]
+
+        expect(ff).to include('b') # должен остаться правильный вариант
+        expect(ff.size).to eq 2 # всего должно остаться 2 варианта
       end
     end
   end
