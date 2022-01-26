@@ -5,21 +5,13 @@
     </div>
 
     <div class="game-question">
-      <div class="alert alert-info text-center">
-        <h2><%= @game_question.text %></h2>
-      </div>
+      <%# Выводим шаблон с текстом вопроса и вариантами ответа %>
+      <%= render partial: 'game_question', object: @game_question %>
+    </div>
 
-      <div class="row">
-        <% @game_question.variants.each do |letter, variant| %>
-          <div class="col-md-6 buffer-top">
-            <%= link_to content_tag(:span, letter.upcase, class: 'variant') + ": #{variant}",
-                        answer_game_path(@game, letter: letter),
-                        method: :put,
-                        class: 'btn btn-block btn-default btn-variant'
-            %>
-          </div>
-        <% end %>
-      </div>
+    <div class="buffer-top-lg">
+      <%# Выводим шаблон с кнопками для подсказок и информацией о подсказках %>
+      <%= render partial: 'help', object: @game_question.help_hash, locals: {game: @game} %>
     </div>
   </div>
 
