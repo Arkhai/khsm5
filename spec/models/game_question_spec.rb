@@ -38,7 +38,7 @@ RSpec.describe GameQuestion, type: :model do
     end
   end
 
-  describe '#delegate' do
+  describe '#delegate text and level to question' do
     it 'delegates .level & .text to question' do
       expect(game_question.text).to eq(game_question.question.text)
       expect(game_question.level).to eq(game_question.question.level)
@@ -65,31 +65,68 @@ RSpec.describe GameQuestion, type: :model do
     end
   end
 
-  describe '#apply_help!' do
-    context 'user uses help' do
-      it 'correct audience_help' do
+  describe '#add_audience_help' do
+    context 'before using audience_help' do
+      it 'returns empty hash' do
         expect(game_question.help_hash).not_to include(:audience_help)
+      end
+    end
 
+    context 'added audience_help' do
+      it 'returns not empty hash' do
         game_question.add_audience_help
-
         expect(game_question.help_hash).to include(:audience_help)
+      end
 
+      it 'returns correct keys' do
+        game_question.add_audience_help
         ah = game_question.help_hash[:audience_help]
         expect(ah.keys).to contain_exactly('a', 'b', 'c', 'd')
       end
+    end
+  end
 
-      it 'correct fifty_fifty' do
-        # сначала убедимся, в подсказках пока нет нужного ключа
+  describe '#add_fifty_fifty' do
+    context 'before using fifty_fifty' do
+      it 'returns empty hash' do
         expect(game_question.help_hash).not_to include(:fifty_fifty)
-        # вызовем подсказку
+      end
+    end
+
+    context 'added fifty_fifty' do
+      it 'returns not empty hash' do
         game_question.add_fifty_fifty
-
-        # проверим создание подсказки
         expect(game_question.help_hash).to include(:fifty_fifty)
-        ff = game_question.help_hash[:fifty_fifty]
+      end
 
-        expect(ff).to include('b') # должен остаться правильный вариант
-        expect(ff.size).to eq 2 # всего должно остаться 2 варианта
+      it 'returns correct key' do
+        game_question.add_fifty_fifty
+        expect(game_question.help_hash[:fifty_fifty]).to include('b') # должен остаться правильный вариант
+      end
+
+      it 'returns correct keys size' do
+        game_question.add_fifty_fifty
+        expect(game_question.help_hash[:fifty_fifty].size).to eq 2 # всего должно остаться 2 варианта
+      end
+    end
+  end
+
+  describe '#add_friend_call' do
+    context 'before using friend_call' do
+      it 'returns empty hash' do
+        expect(game_question.help_hash).not_to include(:friend_call)
+      end
+    end
+
+    context 'added friend_call' do
+      it 'returns not empty hash' do
+        game_question.add_friend_call
+        expect(game_question.help_hash).to include(:friend_call)
+      end
+
+      it 'contains one key' do
+        game_question.add_friend_call
+        expect(game_question.help_hash[:friend_call]).to match(/[ABCD]/)
       end
     end
   end
