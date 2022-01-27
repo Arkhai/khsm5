@@ -39,6 +39,13 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+  # Настройки, чтобы в открываемых с помощью save_and_open_page страницах
+  # были все нужные стили
+  # Внимание! Нужно поднять сервер на 3000-м порте.
+  config.serve_static_files = true
+  config.assets.debug = true
+  config.asset_host = 'http://localhost:3000'
+  config.static_cache_control = 'public, max-age=3600'
 end
 
 #
