@@ -5,14 +5,14 @@ require 'rails_helper'
 RSpec.feature 'USER creates a game', type: :feature do
   # Чтобы пользователь мог начать игру, нам надо
   # создать пользователя
-  let(:user) { FactoryBot.create :user }
+  let(:user) { create :user }
 
   # и создать 15 вопросов с разными уровнями сложности
   # Обратите внимание, что текст вопроса и вариантов ответа нам
   # здесь важен, так как именно их мы потом будем проверяеть
   let!(:questions) do
     (0..14).to_a.map do |i|
-      FactoryBot.create(
+      create(
         :question, level: i,
         text: "Когда была куликовская битва номер #{i}?",
         answer1: '1380', answer2: '1381', answer3: '1382', answer4: '1383'
@@ -21,7 +21,7 @@ RSpec.feature 'USER creates a game', type: :feature do
   end
 
   # Перед началом любого сценария нам надо авторизовать пользователя
-  before(:each) do
+  before do
     login_as user
   end
 
