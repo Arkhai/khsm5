@@ -1,5 +1,3 @@
-# (c) goodprogrammer.ru
-
 require 'rails_helper'
 
 # Тестовый сценарий для модели Вопрос

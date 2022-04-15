@@ -18,8 +18,7 @@ RSpec.describe 'users/show', type: :view do
 
     it 'renders game partial' do
       assign(:games, [build_stubbed(:game, id: 15,
-                        created_at: Time.parse('2016.10.09, 13:00'), current_level: 10, prize: 1000)]
-                      )
+                        created_at: Time.parse('2016.10.09, 13:00'), current_level: 10, prize: 1000)])
       stub_template 'users/_game.html.erb' => 'User game goes here'
       render
 

@@ -14,7 +14,7 @@ RSpec.describe GamesController, type: :controller do
       # Аноним не может смотреть игру
       it 'kicks from #show' do
         # Вызываем экшен
-        get :show, params: {id: game_w_questions.id}
+        get :show, params: { id: game_w_questions.id }
         # Проверяем ответ
         # статус ответа не равен 200
         expect(response.status).not_to eq(200)
@@ -29,7 +29,7 @@ RSpec.describe GamesController, type: :controller do
       it 'show game' do
         sign_in user
         # Показываем по GET-запросу
-        get :show, params: {id: game_w_questions.id}
+        get :show, params: { id: game_w_questions.id }
         # Вытаскиваем из контроллера поле @game
         game = assigns(:game)
         # Игра не закончена
@@ -49,7 +49,7 @@ RSpec.describe GamesController, type: :controller do
         alien_game = FactoryBot.create(:game_with_questions)
 
         # пробуем зайти на эту игру текущий залогиненным user
-        get :show, params: {id: alien_game.id}
+        get :show, params: { id: alien_game.id }
 
         expect(response.status).not_to eq(200) # статус не 200 ОК
         expect(response).to redirect_to(root_path)
@@ -115,7 +115,7 @@ RSpec.describe GamesController, type: :controller do
   describe '#answer' do
     context 'Anonimus user' do
       it 'kicks from #answer' do
-        put :answer, params: {id: game_w_questions.id, letter: game_w_questions.current_game_question.correct_answer_key}
+        put :answer, params: { id: game_w_questions.id, letter: game_w_questions.current_game_question.correct_answer_key }
 
         expect(response.status).not_to eq(200)
         expect(response).to redirect_to(new_user_session_path)
@@ -128,7 +128,7 @@ RSpec.describe GamesController, type: :controller do
         it 'continues game' do
           sign_in user
           # Дёргаем экшен answer, передаем параметр params[:letter]
-          put :answer, params: {id: game_w_questions.id, letter: game_w_questions.current_game_question.correct_answer_key}
+          put :answer, params: { id: game_w_questions.id, letter: game_w_questions.current_game_question.correct_answer_key }
           game = assigns(:game)
 
           # Игра не закончена
@@ -146,7 +146,7 @@ RSpec.describe GamesController, type: :controller do
       context 'and answer is wrong' do
         it 'finishes game with fail' do
           sign_in user
-          put :answer, params: {id: game_w_questions.id, letter: 'a'}
+          put :answer, params: { id: game_w_questions.id, letter: 'a' }
           game = assigns(:game)
 
           expect(game.finished?).to be_truthy
@@ -160,7 +160,7 @@ RSpec.describe GamesController, type: :controller do
   describe '#take_money' do
     context 'Anonimus user' do
       it 'kicks from #take_money' do
-        put :take_money, params: {id: game_w_questions.id}
+        put :take_money, params: { id: game_w_questions.id }
 
         expect(response.status).not_to eq(200)
         expect(response).to redirect_to(new_user_session_path)
@@ -174,7 +174,7 @@ RSpec.describe GamesController, type: :controller do
         # вручную поднимем уровень вопроса до выигрыша 200
         game_w_questions.update_attribute(:current_level, 2)
 
-        put :take_money, params: {id: game_w_questions.id}
+        put :take_money, params: { id: game_w_questions.id }
         # Вытаскиваем из контроллера поле @game
         game = assigns(:game)
         expect(game.finished?).to be_truthy
@@ -207,7 +207,7 @@ RSpec.describe GamesController, type: :controller do
 
         context 'audience help is used' do
           before do
-            put :help, params: {id: game_w_questions.id, help_type: :audience_help}
+            put :help, params: { id: game_w_questions.id, help_type: :audience_help }
           end
 
           let(:game) { assigns(:game) }
@@ -247,7 +247,7 @@ RSpec.describe GamesController, type: :controller do
 
         context 'fifty fifty is used' do
           before do
-            put :help, params: {id: game_w_questions.id, help_type: :fifty_fifty}
+            put :help, params: { id: game_w_questions.id, help_type: :fifty_fifty }
           end
 
           let(:game) { assigns(:game) }

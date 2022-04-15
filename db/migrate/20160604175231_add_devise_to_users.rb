@@ -1,5 +1,3 @@
-#  (c) goodprogrammer.ru
-#
 # Прикручиваем к юзерам девайз
 class AddDeviseToUsers < ActiveRecord::Migration[5.1]
   def self.up

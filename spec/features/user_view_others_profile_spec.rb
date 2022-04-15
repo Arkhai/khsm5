@@ -14,36 +14,35 @@ RSpec.feature 'USER view others profile', type: :feature do
   end
 
   scenario 'user view other user profile' do
-
-    visit "/"
+    visit '/'
     click_link 'Миша'
-    #save_and_open_page
+    # save_and_open_page
 
-    #'contains name of the first user'
+    # 'contains name of the first user'
     expect(page).to have_content 'Вадик'
 
-    #'contains balance of the first user'
+    # 'contains balance of the first user'
     expect(page).to have_content '5 000 ₽'
 
-    #'contains name of the other user'
+    # 'contains name of the other user'
     expect(page).to have_content 'Миша'
 
-    #'doesnt contains other user balance'
+    # 'doesnt contains other user balance'
     expect(page).not_to have_content '3 000 ₽'
 
-    #'contains correct games statuses'
+    # 'contains correct games statuses'
     expect(page).to have_content 'процессе'
     expect(page).to have_content 'деньги'
 
-    #'contains correct games dates'
+    # 'contains correct games dates'
     expect(page).to have_content '10 окт., 18:00'
     expect(page).to have_content '09 окт., 13:00'
 
-    #'contains correct games prizes'
+    # 'contains correct games prizes'
     expect(page).to have_content '1 000 ₽'
     expect(page).to have_content '100 ₽'
 
-    #'doesnt contain option to change the name'
+    # 'doesnt contain option to change the name'
     expect(page).not_to have_content 'Сменить имя и пароль'
   end
 end

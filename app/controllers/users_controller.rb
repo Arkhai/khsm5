@@ -1,5 +1,3 @@
-# (c) goodprogrammer.ru
-#
 # Контроллер, отображающий список и профиль юзера
 class UsersController < ApplicationController
   before_action :set_user, only: [:show]

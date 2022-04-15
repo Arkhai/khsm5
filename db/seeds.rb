@@ -1,7 +1,4 @@
-# (с) goodprogrammer.ru
-#
 # Файл для населения БД начальными данными, чтобы было с чем играться
-#
 # выполняется в консоли rake db:seed
 
 Question.create(level: 0, text: '2 + 2 = ...', answer1: '4', answer2: '5', answer3: 'точно не известно', answer4: '-1')

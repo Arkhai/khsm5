@@ -8,9 +8,9 @@ RSpec.describe 'users/index', type: :view do
   # Обратите внимание, что мы объекты в базу не кладем, т.к. пишем FactoryGirl.build_stubbed
   before(:each) do
     assign(:users, [
-      FactoryBot.build_stubbed(:user, name: 'Вадик', balance: 5000),
-      FactoryBot.build_stubbed(:user, name: 'Миша', balance: 3000),
-    ])
+                      FactoryBot.build_stubbed(:user, name: 'Вадик', balance: 5000),
+                      FactoryBot.build_stubbed(:user, name: 'Миша', balance: 3000)
+                    ])
 
     render
   end

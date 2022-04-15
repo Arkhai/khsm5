@@ -1,5 +1,3 @@
-# (c) goodprogrammer.ru
-#
 # Админский контроллер, только для наполнения базы вопросов с помощью файлов
 # определенного формата
 # Создает новую игру, обновляет статус игры по ответам юзера, выдает подсказки
@@ -13,8 +11,7 @@ class QuestionsController < ApplicationController
 
   # GET /questions/new
   # Форма для загрузки пачки вопросов
-  def new
-  end
+  def new; end
 
   # POST /questions
   # Обработка формы, содержащей файл с вопросами и поле - уровень
@@ -45,7 +42,6 @@ class QuestionsController < ApplicationController
                   " время #{Time.at((Time.now - start_time).to_i).utc.strftime '%S.%L сек'}"
   end
 
-
   private
 
   def authorize_admin!
@@ -74,5 +70,4 @@ class QuestionsController < ApplicationController
 
     failed
   end
-
 end

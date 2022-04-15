@@ -15,7 +15,7 @@ RSpec.describe 'games/game_question', type: :view do
     #
     allow(game_question).to receive(:text).and_return('Кому на Руси жить хорошо?')
     allow(game_question).to receive(:variants).and_return(
-      {'a' => 'Всем', 'b' => 'Никому', 'c' => 'Животным', 'd' => 'Людям'}
+      { 'a' => 'Всем', 'b' => 'Никому', 'c' => 'Животным', 'd' => 'Людям' }
     )
   end
 
@@ -38,7 +38,7 @@ RSpec.describe 'games/game_question', type: :view do
 
   # Проверяем, что если использована подсказка, то вариантов только два
   it 'renders half variant if fifty-fifty used' do
-    allow(game_question).to receive(:help_hash).and_return({fifty_fifty: ['a', 'b']})
+    allow(game_question).to receive(:help_hash).and_return({ fifty_fifty: ['a', 'b'] })
 
     render_partial
 

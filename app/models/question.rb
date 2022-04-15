@@ -1,5 +1,3 @@
-#  (c) goodprogrammer.ru
-#
 # Вопрос — основная смысловая единица базы вопросов. Из вопросов разных уровней
 # сложности формируются все игры.
 class Question < ActiveRecord::Base
@@ -7,7 +5,7 @@ class Question < ActiveRecord::Base
 
   # У вопроса обязательно должен быть уровень сложности. Это целое число
   # от 0 до 14.
-  validates :level, presence: true, inclusion: {in: QUESTION_LEVELS}
+  validates :level, presence: true, inclusion: { in: QUESTION_LEVELS }
 
   # Текст вопроса не может быть пустым и не должен повторяться, иначе какой
   # смысл: этот вопрос дважды есть в базе.

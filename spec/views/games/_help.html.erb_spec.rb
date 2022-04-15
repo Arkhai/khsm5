@@ -6,7 +6,7 @@ RSpec.describe 'games/help', type: :view do
   # Перед началом теста подготовим объекты
   # build_stubbed не создает объекта в базе, будьте аккуратны
   let(:game) { FactoryBot.build_stubbed(:game) }
-  let(:help_hash) { {friend_call: 'Сережа считает, что это вариант D'} }
+  let(:help_hash) { { friend_call: 'Сережа считает, что это вариант D' } }
 
   # Проверяем, что выводятся кнопки подсказок
   it 'renders help variant' do
@@ -36,8 +36,7 @@ RSpec.describe 'games/help', type: :view do
   private
 
   # Метод, который рендерит фрагмент с соотв. объектами
-
   def render_partial(help_hash, game)
-    render partial: 'games/help', object: help_hash, locals: {game: game}
+    render partial: 'games/help', object: help_hash, locals: { game: game }
   end
 end

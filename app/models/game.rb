@@ -1,5 +1,3 @@
-#  (c) goodprogrammer.ru
-#
 # Модельи игры — создается когда пользователь начинает новую игру. Хранит и
 # обновляет состояние игры и отвечает за игровой процесс.
 class Game < ActiveRecord::Base
@@ -22,7 +20,7 @@ class Game < ActiveRecord::Base
 
   # Текущий уровень сложности вопроса: число от 0 до 14, это поле не можеть быть
   # nil.
-  validates :current_level, numericality: {only_integer: true}, allow_nil: false
+  validates :current_level, numericality: { only_integer: true }, allow_nil: false
 
   # Выигрыш игрока — целое число, лежащее от нуля до максимального приза за игру
   validates :prize, presence: true, numericality: {
@@ -133,21 +131,8 @@ class Game < ActiveRecord::Base
     end
   end
 
-  # TODO: Дорогой ученик!
-  #
-  # Код метода ниже можно сократиь в 3 раза с помощью возможностей Ruby и Rails,
-  # подумайте как и реализуйте. Помните о безопасности и входных данных!
-  #
-  # Вариант решения вы найдете в комментарии в конце файла, отвечающего за настройки
-  # хранения сессий вашего приложения. Вот такой вот вам ребус :)
-  #
-  # Создает варианты подсказок для текущего игрового вопроса.
-  # Возвращает true, если подсказка применилась успешно,
-  # false если подсказка уже заюзана.
-  #
-  # help_type = :fifty_fifty | :audience_help | :friend_call
   def use_help(help_type)
-    help_types = %i(fifty_fifty audience_help friend_call)
+    help_types = %i[fifty_fifty audience_help friend_call]
     help_type = help_type.to_sym
     raise ArgumentError.new('wrong help_type') unless help_types.include?(help_type)
 
@@ -178,9 +163,6 @@ class Game < ActiveRecord::Base
     return :in_progress unless finished?
 
     if is_failed
-      # TODO: дорогой ученик! Если TIME_LIMIT в будущем изменится, статусы
-      # старых, уже сыгранных игр могут измениться. Подумайте как это исправить!
-      # Ответ найдете в файле настроек вашего тестового окружения.
       (finished_at - created_at) > TIME_LIMIT ? :timeout : :fail
     elsif current_level > Question::QUESTION_LEVELS.max
       :won

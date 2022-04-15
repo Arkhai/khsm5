@@ -1,5 +1,3 @@
-# (c) goodprogrammer.ru
-
 # Стандартный rspec-овский помощник для rails-проекта
 require 'rails_helper'
 

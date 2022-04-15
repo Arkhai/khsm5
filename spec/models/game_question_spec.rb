@@ -1,5 +1,3 @@
-# (c) goodprogrammer.ru
-
 require 'rails_helper'
 
 # Тестовый сценарий для модели игрового вопроса, в идеале весь наш функционал
@@ -61,7 +59,7 @@ RSpec.describe GameQuestion, type: :model do
       gq = GameQuestion.find(game_question.id)
 
       # проверяем новые значение хэша
-      expect(gq.help_hash).to eq({some_key1: 'blabla1', some_key2: 'blabla2'})
+      expect(gq.help_hash).to eq({ some_key1: 'blabla1', some_key2: 'blabla2' })
     end
   end
 

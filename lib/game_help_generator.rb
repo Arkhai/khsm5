@@ -1,5 +1,3 @@
-#  (c) goodprogrammer.ru
-#
 # Класс, генерирующий подсказки по игре для поля GameQuestion#help_hash
 class GameHelpGenerator
   # Сколько всего виртуальных зрителей в игре (в процентах получается)

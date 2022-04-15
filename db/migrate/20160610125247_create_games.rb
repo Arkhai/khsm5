@@ -1,5 +1,3 @@
-#  (c) goodprogrammer.ru
-#
 # Создаем игры
 class CreateGames < ActiveRecord::Migration[5.1]
   def change
@@ -11,7 +9,7 @@ class CreateGames < ActiveRecord::Migration[5.1]
       t.datetime :finished_at
       t.integer :current_level, default: 0, null: false
       t.boolean :is_failed
-      t.integer :prize, default: 0,  null: false
+      t.integer :prize, default: 0, null: false
 
       t.timestamps null: false
     end

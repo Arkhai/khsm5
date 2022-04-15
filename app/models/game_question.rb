@@ -9,15 +9,10 @@ class GameQuestion < ActiveRecord::Base
 
   # Создаем в этой модели виртуальные геттеры text, level, значения которых
   # автоматически берутся из связанной модели question.
-  #
   # Таким обазом при вызове, например
-  #
   # game_question.text
-  #
   # получим то, что лежит в
-  #
   # game_question.question.text
-  #
   delegate :text, :level, to: :question, allow_nil: true
 
   # Без игры и вопроса — игровой вопрос не имеет смысла
@@ -25,26 +20,22 @@ class GameQuestion < ActiveRecord::Base
 
   # В полях a, b, c и d прячутся индексы ответов из объекта :game. Каждый из
   # них — целое число от 1 до 4.
-  validates :a, :b, :c, :d, inclusion: {in: 1..4}
+  validates :a, :b, :c, :d, inclusion: { in: 1..4 }
 
   serialize :help_hash, Hash
 
   # {
-  #   # При использовании подсказки остались варианты a и b
+  #   При использовании подсказки остались варианты a и b
   #   fifty_fifty: ['a', 'b'],
   #
   #   # Распределение голосов по вариантам a, b, c, d
-  #   audience_help: {'a' => 42, 'c' => 37 ...},
+  #   audience_help: { 'a' => 42, 'c' => 37 ... },
   #
   #   # Друг решил, что правильный ответ А (просто пишем текстом)
   #   friend_call: 'Василий Петрович считает, что правильный ответ A'
   # }
-
-
   # Основные методы для доступа к данным в шаблонах и контроллерах:
-
   # Метод variants возвращает хэш с ключами a..d и значениями — тектом ответов:
-  #
   # {
   #   'a' => 'Текст ответа Х',
   #   'b' => 'Текст ответа У',
@@ -70,7 +61,7 @@ class GameQuestion < ActiveRecord::Base
   # или 'd'. Обратите внимание, что в переменных a, b, c и d игрового вопроса
   # лежат числа от 1 до 4, но мы не знаем, в какой букве какое число.
   def correct_answer_key
-    {a => 'a', b => 'b', c => 'c', d => 'd'}[1]
+    { a => 'a', b => 'b', c => 'c', d => 'd' }[1]
   end
 
   # Метод correct_answer возвращает текст правильного ответа
@@ -94,7 +85,7 @@ class GameQuestion < ActiveRecord::Base
   def add_fifty_fifty
     self.help_hash[:fifty_fifty] = [
       correct_answer_key,
-      (%w(a b c d) - [correct_answer_key]).sample
+      (%w[a b c d] - [correct_answer_key]).sample
     ]
 
     save

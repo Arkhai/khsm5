@@ -1,7 +1,4 @@
-# (c) goodprogrammer.ru
-#
 # Объявление фабрики для создания нужных в тестах объектов
-#
 # См. другие примеры на
 #
 # http://www.rubydoc.info/gems/factory_girl/file/GETTING_STARTED.md
@@ -24,6 +21,6 @@ FactoryBot.define do
 
     # Коллбэк — после фазы :build записываем поля паролей, иначе Devise не
     # позволит создать юзера
-    after(:build) { |u| u.password_confirmation = u.password = "123456"}
+    after(:build) { |u| u.password_confirmation = u.password = '123456' }
   end
 end
